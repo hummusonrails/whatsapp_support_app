@@ -1,0 +1,6 @@
+<tr id="<%= dom_id(ticket) %>">
+  <td><%= ticket.user.name %></td>
+  <td><%= ticket.query %></td>
+  <td><%= ticket.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+  <td><%= link_to 'View', ticket_path(ticket) %></td>
+</tr>

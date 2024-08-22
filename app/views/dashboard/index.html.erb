@@ -1,0 +1,39 @@
+<div class="relative flex flex-col w-full h-full overflow-scroll text-gray-700">
+  <h1 class="text-2xl font-bold mb-4">Open Tickets</h1>
+  <table class="w-full text-left table-auto min-w-max bg-white shadow-md rounded-lg">
+    <thead>
+      <tr>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">User</p>
+        </th>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">Query</p>
+        </th>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">Submitted At</p>
+        </th>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">Actions</p>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-gray-600 text-sm font-light">
+      <% @tickets.each do |ticket| %>
+        <tr class="border-b border-gray-200 hover:bg-gray-100">
+          <td class="p-4 whitespace-nowrap">
+            <span class="font-medium"><%= ticket.user.name %></span>
+          </td>
+          <td class="p-4">
+            <%= ticket.query %>
+          </td>
+          <td class="p-4">
+            <%= ticket.created_at.strftime("%Y-%m-%d %H:%M") %>
+          </td>
+          <td class="p-4">
+            <%= link_to 'View', ticket_path(ticket), class: "text-blue-500 hover:text-blue-700 font-medium" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

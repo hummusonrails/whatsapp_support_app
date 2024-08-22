@@ -1,0 +1,14 @@
+<%= turbo_stream.append "messages_#{@ticket.user.id}" do %>
+  <div class="bg-gray-50 p-4 rounded-lg shadow flex items-start">
+    <div class="flex-1">
+      <p class="text-sm text-gray-500"><strong><%= @reply.sender %>:</strong> <%= @reply.body %></p>
+      <p class="text-xs text-gray-400"><%= @reply.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+    </div>
+    <div class="ml-4 flex-shrink-0">
+      <%= form_with url: mark_as_answer_ticket_path(@ticket, message_id: @reply.id), method: :post do %>
+        <%= form.check_box :answer, class: "mr-2" %>
+        <%= form.submit "Mark as Answer", class: "bg-green-600 text-white px-2 py-1 rounded-lg shadow hover:bg-green-700 transition" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

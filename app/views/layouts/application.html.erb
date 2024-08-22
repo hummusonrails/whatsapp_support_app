@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WhatsApp Support App</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+    
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-4">
+      <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold">WhatsApp Support</h1>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto mt-10 px-5">
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white py-4 mt-6">
+      <div class="container mx-auto px-4 text-center">
+        <p class="text-sm">&copy; 2024 WhatsApp Support. All rights reserved.</p>
+      </div>
+    </footer>
+    
+  </body>
+</html>

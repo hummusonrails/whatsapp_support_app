@@ -1,0 +1,47 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto bg-white shadow-md rounded-lg p-6">
+  <!-- Column 1: Ticket Details and Respond to User -->
+  <div>
+    <h2 class="text-2xl font-bold mb-6 text-gray-700">Ticket Details</h2>
+
+    <div class="mb-4">
+      <p class="text-sm text-gray-500 font-semibold">User:</p>
+      <p class="text-lg text-gray-800"><%= @user.name %></p>
+    </div>
+
+    <div class="mb-4">
+      <p class="text-sm text-gray-500 font-semibold">Query:</p>
+      <p class="text-lg text-gray-800"><%= @ticket.query %></p>
+    </div>
+
+    <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-700">Suggested Solutions</h3>
+    <% @suggestions.each do |suggestion| %>
+      <div class="bg-blue-50 p-4 mb-4 rounded-lg shadow">
+        <p class="text-sm text-gray-500 font-semibold">Similarity:</p>
+        <p class="text-md text-gray-800 mb-2"><%= suggestion[:score].round(2) %></p>
+        <p class="text-sm text-gray-600"><%= suggestion[:summary] %></p>
+      </div>
+    <% end %>
+
+    <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-700">Respond to User</h3>
+    <div class="mb-4">
+      <%= form_with url: reply_messages_path, method: :post, data: { turbo_stream: true } do |form| %>
+        <div class="mb-4">
+          <%= form.text_area :message, placeholder: "Your Response", class: "w-full p-4 rounded-lg border-gray-300 focus:ring focus:ring-blue-200 shadow-sm" %>
+        </div>
+        <%= form.submit "Send Reply", class: "bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Column 2: Ongoing Conversation -->
+  <div>
+    <h3 class="text-xl font-bold mb-4 text-gray-700">Ongoing Conversation</h3>
+
+    <div id="messages_<%= @user.id %>" class="space-y-4">
+      <!-- Turbo Stream will dynamically inject new messages here -->
+    </div>
+  </div>
+</div>
+
+<!-- Turbo Stream Template -->
+<%= turbo_stream_from "whatsapp_messages_#{@user.id}" %>

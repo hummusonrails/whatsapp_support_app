@@ -1,0 +1,17 @@
+development:
+  connection_string: <%= ENV['COUCHBASE_CONNECTION_STRING'] %>
+  username: <%= ENV['COUCHBASE_USERNAME'] %>
+  password: <%= ENV['COUCHBASE_PASSWORD'] %>
+  bucket: <%= ENV['COUCHBASE_BUCKET'] %>
+
+test:
+  connection_string: <%= ENV['COUCHBASE_CONNECTION_STRING'] %>
+  username: <%= ENV['COUCHBASE_USERNAME'] %>
+  password: <%= ENV['COUCHBASE_PASSWORD'] %>
+  bucket: <%= ENV['COUCHBASE_BUCKET'] %>
+
+production:
+  connection_string: <%= ENV['COUCHBASE_CONNECTION_STRING'] %>
+  username: <%= ENV['COUCHBASE_USERNAME'] %>
+  password: <%= ENV['COUCHBASE_PASSWORD'] %>
+  bucket: <%= ENV['COUCHBASE_BUCKET'] %>
