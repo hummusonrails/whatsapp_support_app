@@ -1,15 +1,27 @@
 class DashboardController < ApplicationController
   def index
-    @tickets = Ticket.where(status: 'open').to_a.sort_by { |ticket| ticket.created_at }.reverse
+    @open_tickets = Ticket.where(status: ['open', 1]).to_a.sort_by { |ticket| ticket.created_at }.reverse
+    @resolved_tickets = Ticket.all.to_a.select { |ticket| ticket.status == Ticket::RESOLVED }.to_a.sort_by { |ticket| ticket.updated_at }.reverse
   end
 
   def show
-    @ticket = Ticket.find(params[:id])
-    @user = @ticket.user
-    @suggestions = search_similar_tickets(@ticket.query)
+    @ticket = find_ticket
+    @user = find_user
+    @suggestions = find_suggestions
   end
 
   private
+  def find_ticket
+    Ticket.find(params[:id])
+  end
+
+  def find_user
+    find_ticket.user
+  end
+
+  def find_suggestions
+    search_similar_tickets(find_ticket.query)
+  end
 
   def search_similar_tickets(query)
     embedding = OPENAI_CLIENT.embeddings(

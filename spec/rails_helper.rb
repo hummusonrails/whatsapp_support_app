@@ -1,17 +1,20 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
-
 require 'webmock/rspec'
+require 'capybara/rspec'
+require 'capybara'
+require 'capybara/dsl'
+require 'webdrivers'
+
 WebMock.disable_net_connect!(allow_localhost: true)
 
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
-# Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -20,11 +23,6 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 # run twice. It is recommended that you do not name files matching this glob to
 # end with _spec.rb. You can configure this pattern with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-#
-# The following line is provided for convenience purposes. It has the downside
-# of increasing the boot-up time by auto-requiring all files in the support
-# directory. Alternatively, in the individual `*_spec.rb` files, manually
-# require only the support files necessary.
 #
 # Rails.root.glob('spec/support/**/*.rb').sort.each { |f| require f }
 
@@ -35,9 +33,12 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
   # Include CouchbaseMock module to mock Couchbase connections
   config.include CouchbaseMock
+  config.include WhatsappMock
+  config.include Capybara::DSL
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
@@ -71,4 +72,25 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Capybara configuration for feature tests
+  config.before(:each, type: :system) do
+    driven_by(:playwright)
+  end
+
+  config.before(:each) do
+    RSpec::Mocks.space.reset_all
+  end
+
+  config.before(:each) do
+    stub_request(:get, %r{https://chromedriver\.storage\.googleapis\.com/.*})
+      .to_return(status: 200, body: "", headers: {})
+  end
+
+  Webdrivers::Chromedriver.required_version = '114.0.5735.90'
+end
+
+# Capybara configuration
+Capybara.configure do |config|
+  config.default_driver = :selenium_chrome_headless
 end
