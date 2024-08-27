@@ -1,5 +1,6 @@
+<%= turbo_stream_from "messages_#{@user.id}" %>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto bg-white shadow-md rounded-lg p-6">
-  <!-- Column 1: Ticket Details and Respond to User -->
   <div>
     <h2 class="text-2xl font-bold mb-6 text-gray-700">Ticket Details</h2>
 
@@ -13,6 +14,11 @@
       <p class="text-lg text-gray-800"><%= @ticket.query %></p>
     </div>
 
+    <div class="mb-4">
+      <p class="text-sm text-gray-500 font-semibold">Status:</p>
+      <p class="text-lg text-gray-800"><%= @ticket.status.capitalize %></p>
+    </div>
+
     <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-700">Suggested Solutions</h3>
     <% @suggestions.each do |suggestion| %>
       <div class="bg-blue-50 p-4 mb-4 rounded-lg shadow">
@@ -24,24 +30,27 @@
 
     <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-700">Respond to User</h3>
     <div class="mb-4">
-      <%= form_with url: reply_messages_path, method: :post, data: { turbo_stream: true } do |form| %>
+      <%= form_with url: reply_messages_path, method: :post do |form| %>
+        <%= form.hidden_field :ticket_id, value: @ticket.id %>
         <div class="mb-4">
-          <%= form.text_area :message, placeholder: "Your Response", class: "w-full p-4 rounded-lg border-gray-300 focus:ring focus:ring-blue-200 shadow-sm" %>
+          <%= form.text_area :message, id: 'message_input', placeholder: "Your Response", class: "w-full p-4 rounded-lg border-gray-300 focus:ring focus:ring-blue-200 shadow-sm" %>
         </div>
-        <%= form.submit "Send Reply", class: "bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition" %>
+        <div class="flex items-center">
+          <%= form.check_box :mark_as_resolved, class: "mr-2" %>
+          <label for="mark_as_resolved" class="text-sm text-gray-600">Mark as Resolved</label>
+        </div>
+        <%= form.submit "Send Reply", class: "bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition mt-4" %>
       <% end %>
     </div>
   </div>
 
-  <!-- Column 2: Ongoing Conversation -->
   <div>
     <h3 class="text-xl font-bold mb-4 text-gray-700">Ongoing Conversation</h3>
 
     <div id="messages_<%= @user.id %>" class="space-y-4">
-      <!-- Turbo Stream will dynamically inject new messages here -->
+    </div>
+
+    <div id="inbound_messages_<%= @user.id %>" class="space-y-4 mt-4">
     </div>
   </div>
 </div>
-
-<!-- Turbo Stream Template -->
-<%= turbo_stream_from "whatsapp_messages_#{@user.id}" %>

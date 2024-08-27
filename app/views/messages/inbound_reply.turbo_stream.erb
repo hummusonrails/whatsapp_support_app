@@ -1,0 +1,1 @@
+<%= turbo_stream.append "inbound_messages_#{@user.id}", partial: "messages/inbound_reply", locals: { reply: @reply } %>

@@ -64,6 +64,8 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'webmock'
+  gem 'webdrivers', '~> 5.0', require: false
+  gem 'playwright-ruby-client'
 end
 
 group :development do
@@ -80,5 +82,5 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver"
+  gem "capybara-playwright-driver"
 end

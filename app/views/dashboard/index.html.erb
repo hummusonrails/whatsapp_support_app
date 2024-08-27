@@ -18,21 +18,71 @@
       </tr>
     </thead>
     <tbody class="text-gray-600 text-sm font-light">
-      <% @tickets.each do |ticket| %>
-        <tr class="border-b border-gray-200 hover:bg-gray-100">
-          <td class="p-4 whitespace-nowrap">
-            <span class="font-medium"><%= ticket.user.name %></span>
-          </td>
-          <td class="p-4">
-            <%= ticket.query %>
-          </td>
-          <td class="p-4">
-            <%= ticket.created_at.strftime("%Y-%m-%d %H:%M") %>
-          </td>
-          <td class="p-4">
-            <%= link_to 'View', ticket_path(ticket), class: "text-blue-500 hover:text-blue-700 font-medium" %>
-          </td>
+      <% if @open_tickets.nil? || @open_tickets.empty? %>
+        <tr>
+          <td colspan="4" class="p-4 text-center text-gray-500">Open tickets go here...</td>
         </tr>
+      <% else %>
+        <% @open_tickets.each do |ticket| %>
+          <tr class="border-b border-gray-200 hover:bg-gray-100">
+            <td class="p-4 whitespace-nowrap">
+              <span class="font-medium"><%= ticket.user.name %></span>
+            </td>
+            <td class="p-4">
+              <%= ticket.query %>
+            </td>
+            <td class="p-4">
+              <%= ticket.created_at.strftime("%Y-%m-%d %H:%M") %>
+            </td>
+            <td class="p-4">
+              <%= link_to 'View', ticket_path(ticket), class: "text-blue-500 hover:text-blue-700 font-medium" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h1 class="text-2xl font-bold mt-8 mb-4">Resolved Tickets</h1>
+  <table class="w-full text-left table-auto min-w-max bg-white shadow-md rounded-lg">
+    <thead>
+      <tr>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">User</p>
+        </th>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">Query</p>
+        </th>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">Resolved At</p>
+        </th>
+        <th class="p-4 border-b border-gray-200 bg-gray-50">
+          <p class="block font-sans text-sm antialiased font-normal leading-normal">Actions</p>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-gray-600 text-sm font-light">
+      <% if @resolved_tickets.nil? || @resolved_tickets.empty? %>
+        <tr>
+          <td colspan="4" class="p-4 text-center text-gray-500">Resolved tickets go here...</td>
+        </tr>
+      <% else %>
+        <% @resolved_tickets.each do |ticket| %>
+          <tr class="border-b border-gray-200 hover:bg-gray-100">
+            <td class="p-4 whitespace-nowrap">
+              <span class="font-medium"><%= ticket.user.name %></span>
+            </td>
+            <td class="p-4">
+              <%= ticket.query %>
+            </td>
+            <td class="p-4">
+              <%= ticket.updated_at.strftime("%Y-%m-%d %H:%M") %>
+            </td>
+            <td class="p-4">
+              <%= link_to 'View', ticket_path(ticket), class: "text-blue-500 hover:text-blue-700 font-medium" %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

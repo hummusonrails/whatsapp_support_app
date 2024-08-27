@@ -28,6 +28,7 @@
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
+/videos
 
 /public/assets
 
@@ -40,3 +41,4 @@
 private.key
 public.key
 .DS_Store
+node_modules/
