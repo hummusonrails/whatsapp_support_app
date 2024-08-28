@@ -7,18 +7,22 @@ class MessagesController < ApplicationController
     @reply = { sender: 'User', body: text, created_at: Time.current }
     @user = User.find_by(whatsapp_number: whatsapp_number)
 
-    ActionCable.server.broadcast "messages_#{@user.id}", { reply: @reply, ticket: nil }
+    if @user
+      open_ticket = Ticket.find_by(user_id: @user.id, status: Ticket::OPEN)
 
-    if @user.nil?
+      if open_ticket.nil?
+        Ticket.create!(user_id: @user.id, query: "Awaiting query", status: Ticket::OPEN)
+        send_message(to: whatsapp_number, text: "Thank you for your message. Please describe your support query.")
+      elsif open_ticket.query == "Awaiting query"
+        open_ticket.update!(query: text)
+        ActionCable.server.broadcast "messages_#{@user.id}", { reply: @reply, ticket: open_ticket }
+      else
+        ActionCable.server.broadcast "messages_#{@user.id}", { reply: @reply, ticket: open_ticket }
+      end
+    else
       @user = User.create!(whatsapp_number: whatsapp_number, name: "User #{whatsapp_number[-4..-1]}")
       send_message(to: whatsapp_number, text: "Thank you for your message. Please describe your support query.")
-      Ticket.create!(user_id: @user.id, query: text, status: Ticket::OPEN)
-    else
-      open_ticket = Ticket.find_by(user_id: @user.id, status: Ticket::OPEN)
-    end
-
-    if open_ticket.nil?
-      Ticket.create!(user_id: @user.id, query: text, status: Ticket::OPEN)
+      Ticket.create!(user_id: @user.id, query: "Awaiting query", status: Ticket::OPEN)
     end
 
     respond_to do |format|
@@ -47,6 +51,11 @@ class MessagesController < ApplicationController
       )['data'][0]['embedding']
 
       @ticket.update!(summary: @message, status: Ticket::RESOLVED, embedding: embedding)
+
+      send_message(
+        to: @user.whatsapp_number,
+        text: @message
+      )
 
       respond_to do |format|
         format.html { redirect_to request.referrer, notice: "Ticket marked as resolved." }
